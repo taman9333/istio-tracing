@@ -21,7 +21,7 @@ kind: Service
 metadata:
   name: foo-svc
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: foo
   ports:
