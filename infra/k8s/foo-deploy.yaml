@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: foo-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: foo
+  template:
+    metadata:
+      labels:
+        app: foo
+    spec:
+      containers:
+        - name: foo
+          image: taman9333/foo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: foo-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: foo
+  ports:
+    - name: foo
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
