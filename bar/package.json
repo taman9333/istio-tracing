@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@opentelemetry/core": "^0.14.0",
+    "@opentelemetry/exporter-jaeger": "^0.14.0",
     "@opentelemetry/node": "^0.14.0",
     "@opentelemetry/plugin-express": "^0.12.1",
     "@opentelemetry/plugin-http": "^0.14.0",
