@@ -1,5 +1,5 @@
 {
-  "name": "bar",
+  "name": "baz",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,7 +11,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.21.1",
     "express": "^4.17.1",
     "nodemon": "^2.0.7"
   }

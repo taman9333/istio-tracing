@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: baz-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: baz
+  template:
+    metadata:
+      labels:
+        app: baz
+    spec:
+      containers:
+        - name: baz
+          image: taman9333/baz
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: baz-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: baz
+  ports:
+    - name: baz
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

@@ -11,7 +11,7 @@ app.get('/', async (req, res) => {
   console.log(`## ${JSON.stringify(headers)}`);
   const barRes = await axios.get('http://bar-svc:3000/', { headers });
 
-  console.log(`$$ ${JSON.stringify(barRes.data)}`);
+  // console.log(`$$ ${JSON.stringify(barRes.data)}`);
 
   res.send('Hello from Foo service!');
 });

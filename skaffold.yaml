@@ -24,3 +24,11 @@ build:
         manual:
           - src: 'index.js'
             dest: .
+    - image: taman9333/baz
+      context: baz
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'index.js'
+            dest: .
