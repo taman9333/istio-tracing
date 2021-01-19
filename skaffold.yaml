@@ -32,3 +32,11 @@ build:
         manual:
           - src: 'index.js'
             dest: .
+    - image: taman9333/xyz
+      context: xyz
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'main.go'
+            dest: .
