@@ -5,6 +5,7 @@ const axios = require('axios');
 
 app.get('/', async (req, res) => {
   console.log('Someone call Bar service');
+  console.log(`## ${JSON.stringify(req.headers)}`);
   console.log('I will call Baz service');
   // const headers = traceHeaders(req);
 

@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@opentelemetry/api": "^0.14.0",
     "@opentelemetry/core": "^0.14.0",
     "@opentelemetry/node": "^0.14.0",
     "@opentelemetry/plugin-http": "^0.14.0",
