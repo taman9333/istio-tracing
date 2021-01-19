@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qux-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qux
+  template:
+    metadata:
+      labels:
+        app: qux
+    spec:
+      containers:
+        - name: qux
+          image: taman9333/qux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qux-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: qux
+  ports:
+    - name: qux
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

@@ -4,15 +4,15 @@ const port = 3000;
 const axios = require('axios');
 
 app.get('/', async (req, res) => {
-  console.log('Someone call Bar service');
+  console.log('Someone call qux service');
   console.log(`## ${JSON.stringify(req.headers)}`);
   console.log('I will call Baz service');
   // const headers = traceHeaders(req);
 
-  await axios.get('http://qux-svc:3000/');
-  // console.log(`$$ ${JSON.stringify(barRes.data)}`);
+  await axios.get('http://baz-svc:3000/');
+  // console.log(`$$ ${JSON.stringify(quxRes.data)}`);
 
-  res.send('Hello from Bar service!');
+  res.send('Hello from qux service!');
 });
 
 // function traceHeaders(req) {
