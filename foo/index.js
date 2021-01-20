@@ -8,7 +8,7 @@ app.get('/', async (req, res) => {
   // Forward Headers for tracing
   // const headers = traceHeaders(req);
 
-  // console.log(`## ${JSON.stringify(headers)}`);
+  console.log(`## ${JSON.stringify(req.headers)}`);
   const barRes = await axios.get('http://bar-svc:3000/');
 
   // console.log(`$$ ${JSON.stringify(barRes.data)}`);

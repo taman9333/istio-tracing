@@ -5,7 +5,7 @@ const { SimpleSpanProcessor } = require('@opentelemetry/tracing');
 const { JaegerExporter } = require('@opentelemetry/exporter-jaeger');
 const { B3MultiPropagator } = require('@opentelemetry/propagator-b3');
 
-const serviceName = process.env.SERVICE_NAME || 'foo-service';
+const serviceName = process.env.SERVICE_NAME || 'baz-service';
 const jaegerAgentHost =
   process.env.JAEGER_AGENT_HOST || 'simplest-agent.observability';
 // const jaegerAgentPort = process.env.JAEGER_AGENT_PORT || '6831';

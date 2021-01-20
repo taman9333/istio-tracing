@@ -8,6 +8,7 @@ app.get('/', async (req, res) => {
   console.log('I will call Baz service');
   // const headers = traceHeaders(req);
 
+  console.log(`## ${JSON.stringify(req.headers)}`);
   await axios.get('http://baz-svc:3000/');
   // console.log(`$$ ${JSON.stringify(barRes.data)}`);
 
