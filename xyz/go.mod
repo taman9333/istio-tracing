@@ -1,10 +1,13 @@
-module github.com/istio-tracing/xyz
+module xyz
 
 go 1.14
 
 require (
-	github.com/fatih/color v1.10.0 // indirect
-	github.com/fsnotify/fsnotify v1.4.9 // indirect
-	github.com/githubnemo/CompileDaemon v1.2.1 // indirect
 	github.com/gorilla/mux v1.8.0
+	go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux v0.16.0
+	go.opentelemetry.io/contrib/instrumentation/net/http v0.11.0 // indirect
+	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.16.0
+	go.opentelemetry.io/otel v0.16.0
+	go.opentelemetry.io/otel/exporters/trace/jaeger v0.16.0
+	go.opentelemetry.io/otel/sdk v0.16.0
 )

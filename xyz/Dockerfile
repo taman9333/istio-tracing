@@ -4,9 +4,9 @@ WORKDIR /app
 
 COPY . .
 
-RUN go mod vendor
-
 RUN go get github.com/githubnemo/CompileDaemon
+
+RUN go mod vendor
 
 EXPOSE 3000
 
