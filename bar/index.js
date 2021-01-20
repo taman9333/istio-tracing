@@ -9,7 +9,7 @@ app.get('/', async (req, res) => {
   // const headers = traceHeaders(req);
 
   console.log(`## ${JSON.stringify(req.headers)}`);
-  await axios.get('http://baz-svc:3000/');
+  await axios.get('http://xyz-svc:3000/');
   // console.log(`$$ ${JSON.stringify(barRes.data)}`);
 
   res.send('Hello from Bar service!');

@@ -7,10 +7,10 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: 'true'
 spec:
   rules:
-    - host: ticketing.dev
+    - host: tracing.dev
       http:
         paths:
-          - path: /?(.*)
+          - path: /
             backend:
               serviceName: foo-svc
               servicePort: 3000

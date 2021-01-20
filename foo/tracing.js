@@ -11,6 +11,7 @@ const jaegerAgentHost =
 // this will throw warning could not load plugin @opentelemetry/plugin-express of module express. Error: Cannot find module '@opentelemetry/plugin-express'
 // const provider = new NodeTracerProvider();
 
+// TODO: We need to ignore health endpoints & add sampling rate
 const provider = new NodeTracerProvider({
   plugins: {
     express: {
