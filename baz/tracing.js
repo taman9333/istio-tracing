@@ -1,4 +1,3 @@
-const { LogLevel } = require('@opentelemetry/core');
 const api = require('@opentelemetry/api');
 const { NodeTracerProvider } = require('@opentelemetry/node');
 const { SimpleSpanProcessor } = require('@opentelemetry/tracing');
@@ -8,9 +7,17 @@ const { B3MultiPropagator } = require('@opentelemetry/propagator-b3');
 const serviceName = process.env.SERVICE_NAME || 'baz-service';
 const jaegerAgentHost =
   process.env.JAEGER_AGENT_HOST || 'simplest-agent.observability';
-// const jaegerAgentPort = process.env.JAEGER_AGENT_PORT || '6831';
 
-const provider = new NodeTracerProvider();
+// this will throw warning could not load plugin @opentelemetry/plugin-express of module express. Error: Cannot find module '@opentelemetry/plugin-express'
+// const provider = new NodeTracerProvider();
+
+const provider = new NodeTracerProvider({
+  plugins: {
+    express: {
+      enabled: false
+    }
+  }
+});
 
 api.propagation.setGlobalPropagator(new B3MultiPropagator());
 
@@ -19,7 +26,6 @@ provider.addSpanProcessor(
     new JaegerExporter({
       serviceName: serviceName,
       host: jaegerAgentHost
-      // port: jaegerAgentPort
     })
   )
 );
