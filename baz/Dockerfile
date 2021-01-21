@@ -1,10 +1,10 @@
-FROM node:alpine
+FROM node
 
 WORKDIR /app
 
 COPY package.json ./
 
-RUN npm install --only=prod
+RUN yarn install
 
 COPY . .
 

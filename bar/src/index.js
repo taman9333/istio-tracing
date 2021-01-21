@@ -1,20 +1,20 @@
+require('./tracing');
 const express = require('express');
 const app = express();
 const port = 3000;
 const axios = require('axios');
-require('./tracing');
 
 app.get('/', async (req, res) => {
-  // calling Bar service & log response
-  // Forward Headers for tracing
+  console.log('Someone call Bar service');
+  console.log('I will call Baz service');
   // const headers = traceHeaders(req);
 
   console.log(`## ${JSON.stringify(req.headers)}`);
-  const barRes = await axios.get('http://bar-svc:3000/');
-
+  await axios.get('http://xyz-svc:3000/hello');
+  // await axios.get('http://xyz-svc:3000/hello');
   // console.log(`$$ ${JSON.stringify(barRes.data)}`);
 
-  res.send('Hello from Foo service!');
+  res.send('Hello from Bar service!');
 });
 
 // function traceHeaders(req) {

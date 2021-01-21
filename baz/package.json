@@ -5,19 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon -r ./tracing.js index.js"
+    "start": "nodemon src/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@opentelemetry/api": "^0.14.0",
-    "@opentelemetry/exporter-jaeger": "^0.14.0",
-    "@opentelemetry/node": "^0.14.0",
-    "@opentelemetry/plugin-http": "^0.14.0",
-    "@opentelemetry/plugin-https": "^0.14.0",
-    "@opentelemetry/propagator-b3": "^0.14.0",
-    "@opentelemetry/tracing": "^0.14.0",
+    "@opencensus/exporter-jaeger": "0.0.22",
+    "@opencensus/nodejs": "0.0.22",
+    "@opencensus/propagation-b3": "0.0.22",
     "express": "^4.17.1",
     "nodemon": "^2.0.7"
   }

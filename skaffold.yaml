@@ -14,7 +14,7 @@ build:
         dockerfile: Dockerfile
       sync:
         manual:
-          - src: 'index.js'
+          - src: 'src/*.js'
             dest: .
     - image: taman9333/bar
       context: bar
@@ -22,7 +22,7 @@ build:
         dockerfile: Dockerfile
       sync:
         manual:
-          - src: 'index.js'
+          - src: 'src/*.js'
             dest: .
     - image: taman9333/baz
       context: baz
@@ -30,7 +30,7 @@ build:
         dockerfile: Dockerfile
       sync:
         manual:
-          - src: 'index.js'
+          - src: 'src/*.js'
             dest: .
     - image: taman9333/xyz
       context: xyz

@@ -1,12 +1,12 @@
 const tracing = require('@opencensus/nodejs');
 const propagation = require('@opencensus/propagation-b3');
-import { JaegerTraceExporter } from '@opencensus/exporter-jaeger';
+const { JaegerTraceExporter } = require('@opencensus/exporter-jaeger');
 const b3 = new propagation.B3Format();
 
 const options = {
-  serviceName: 'bar-service',
+  serviceName: 'baz-service',
   host: 'simplest-agent.observability',
-  port: 6831
+  port: 6832
 };
 const exporter = new JaegerTraceExporter(options);
 
