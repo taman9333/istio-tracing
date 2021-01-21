@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const port = 3000;
 const axios = require('axios');
+require('./tracing');
 
 app.get('/', async (req, res) => {
   // calling Bar service & log response

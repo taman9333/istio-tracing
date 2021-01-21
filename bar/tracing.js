@@ -1,33 +1,17 @@
-const api = require('@opentelemetry/api');
-const { NodeTracerProvider } = require('@opentelemetry/node');
-const { SimpleSpanProcessor } = require('@opentelemetry/tracing');
-const { JaegerExporter } = require('@opentelemetry/exporter-jaeger');
-const { B3MultiPropagator } = require('@opentelemetry/propagator-b3');
+const tracing = require('@opencensus/nodejs');
+const propagation = require('@opencensus/propagation-b3');
+import { JaegerTraceExporter } from '@opencensus/exporter-jaeger';
+const b3 = new propagation.B3Format();
 
-const serviceName = process.env.SERVICE_NAME || 'bar-service';
-const jaegerAgentHost =
-  process.env.JAEGER_AGENT_HOST || 'simplest-agent.observability';
+const options = {
+  serviceName: 'bar-service',
+  host: 'simplest-agent.observability',
+  port: 6831
+};
+const exporter = new JaegerTraceExporter(options);
 
-// this will throw warning could not load plugin @opentelemetry/plugin-express of module express. Error: Cannot find module '@opentelemetry/plugin-express'
-// const provider = new NodeTracerProvider();
-
-const provider = new NodeTracerProvider({
-  plugins: {
-    express: {
-      enabled: false
-    }
-  }
+tracing.start({
+  exporter,
+  propagation: b3,
+  samplingRate: 1.0
 });
-
-api.propagation.setGlobalPropagator(new B3MultiPropagator());
-
-provider.addSpanProcessor(
-  new SimpleSpanProcessor(
-    new JaegerExporter({
-      serviceName: serviceName,
-      host: jaegerAgentHost
-    })
-  )
-);
-
-provider.register();

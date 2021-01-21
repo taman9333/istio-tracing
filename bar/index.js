@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const port = 3000;
 const axios = require('axios');
+require('./tracing');
 
 app.get('/', async (req, res) => {
   console.log('Someone call Bar service');
@@ -9,7 +10,8 @@ app.get('/', async (req, res) => {
   // const headers = traceHeaders(req);
 
   console.log(`## ${JSON.stringify(req.headers)}`);
-  await axios.get('http://xyz-svc:3000/hello');
+  await axios.get('http://baz-svc:3000/');
+  // await axios.get('http://xyz-svc:3000/hello');
   // console.log(`$$ ${JSON.stringify(barRes.data)}`);
 
   res.send('Hello from Bar service!');
