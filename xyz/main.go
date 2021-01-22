@@ -6,13 +6,16 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/contrib/propagators/b3"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/baggage"
 	"go.opentelemetry.io/otel/exporters/trace/jaeger"
-	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/label"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -24,16 +27,48 @@ func main() {
 	r.Use(otelmux.Middleware("XYZ", otelmux.WithTracerProvider(tr)))
 	r.HandleFunc("/hello", index)
 	http.Handle("/", r)
-	fmt.Println("Starting up on 3000")
-	log.Fatal(http.ListenAndServe(":3000", nil))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+	fmt.Println("Starting up on " + port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
+}
+
+type myTransport struct {
+	originalTransport http.RoundTripper
+}
+
+func (t *myTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	fmt.Println("BEFORE REQ")
+	if reqHeadersBytes, err := json.Marshal(req.Header); err != nil {
+		log.Println("Could not Marshal Req Headers")
+	} else {
+		log.Println("***", string(reqHeadersBytes))
+	}
+	res, err := t.originalTransport.RoundTrip(req)
+	fmt.Println("AFTER RES")
+	if reqHeadersBytes, err := json.Marshal(req.Header); err != nil {
+		log.Println("Could not Marshal Req Headers")
+	} else {
+		log.Println("***", string(reqHeadersBytes))
+	}
+	return res, err
 }
 
 func index(w http.ResponseWriter, req *http.Request) {
 	client := http.Client{
-		Transport: otelhttp.NewTransport(http.DefaultTransport),
+		Transport: &myTransport{otelhttp.NewTransport(http.DefaultTransport)},
 	}
-	// fmt.Println("!!! ", req.Context().Value("X-B3-Traceid"))
-	reqExt, _ := http.NewRequestWithContext(req.Context(), "GET", "http://baz-svc:3000/", nil)
+
+	ctx := baggage.ContextWithValues(req.Context(), label.String("foo", "bar"))
+
+	reqExt, _ := http.NewRequestWithContext(ctx, "GET", "http://baz-svc:3000/", nil)
+	if reqHeadersBytes, err := json.Marshal(reqExt.Header); err != nil {
+		log.Println("Could not Marshal Req Headers")
+	} else {
+		log.Println("***", string(reqHeadersBytes))
+	}
 
 	resp, err := client.Do(reqExt)
 	if err != nil {
@@ -62,48 +97,10 @@ func initTracer() (trace.TracerProvider, func()) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// cfg := sdktrace.Config{
-	// 	DefaultSampler: sdktrace.AlwaysSample(),
-	// }
-	// tp := sdktrace.NewTracerProvider(
-	// 	sdktrace.WithConfig(cfg),
-	// 	sdktrace.WithSyncer(exporter),
-	// )
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
 	otel.SetTracerProvider(tr)
-	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
+	b3 := b3.B3{
+		InjectEncoding: b3.B3MultipleHeader | b3.B3SingleHeader,
+	}
+	otel.SetTextMapPropagator(b3)
 	return tr, flush
 }
-
-// package main
-
-// import (
-// 	"log"
-// 	"net/http"
-// 	"xyz/tracer"
-
-// 	"github.com/gin-gonic/gin"
-// 	gintrace "go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin"
-// 	option "go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin"
-// 	"go.opentelemetry.io/otel/api/global"
-// )
-
-// var tr = global.Tracer("jaeger-tracing-go-service")
-
-// func main() {
-// 	fn := tracer.InitJaeger()
-// 	defer fn()
-
-// 	// Init Router
-// 	router := gin.Default()
-// 	router.Use(gintrace.Middleware("jaeger-tracing-go-service", option.WithTracer(tr)))
-
-// 	// Route Handlers / Endpoints
-// 	router.GET("/hello", func(c *gin.Context) {
-// 		c.String(http.StatusOK, "hello world")
-// 	})
-
-// 	log.Fatal(router.Run(":3000"))
-// }
