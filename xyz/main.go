@@ -7,15 +7,13 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"xyz/customhttpclient"
 
 	"github.com/gorilla/mux"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux"
-	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/contrib/propagators/b3"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/baggage"
 	"go.opentelemetry.io/otel/exporters/trace/jaeger"
-	"go.opentelemetry.io/otel/label"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -35,42 +33,8 @@ func main() {
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
-type myTransport struct {
-	originalTransport http.RoundTripper
-}
-
-func (t *myTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	fmt.Println("BEFORE REQ")
-	if reqHeadersBytes, err := json.Marshal(req.Header); err != nil {
-		log.Println("Could not Marshal Req Headers")
-	} else {
-		log.Println("***", string(reqHeadersBytes))
-	}
-	res, err := t.originalTransport.RoundTrip(req)
-	fmt.Println("AFTER RES")
-	if reqHeadersBytes, err := json.Marshal(req.Header); err != nil {
-		log.Println("Could not Marshal Req Headers")
-	} else {
-		log.Println("***", string(reqHeadersBytes))
-	}
-	return res, err
-}
-
 func index(w http.ResponseWriter, req *http.Request) {
-	client := http.Client{
-		Transport: &myTransport{otelhttp.NewTransport(http.DefaultTransport)},
-	}
-
-	ctx := baggage.ContextWithValues(req.Context(), label.String("foo", "bar"))
-
-	reqExt, _ := http.NewRequestWithContext(ctx, "GET", "http://baz-svc:3000/", nil)
-	if reqHeadersBytes, err := json.Marshal(reqExt.Header); err != nil {
-		log.Println("Could not Marshal Req Headers")
-	} else {
-		log.Println("***", string(reqHeadersBytes))
-	}
-
-	resp, err := client.Do(reqExt)
+	resp, err := customhttpclient.Req(req.Context(), "GET", "http://baz-svc:3000/", nil)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -98,9 +62,7 @@ func initTracer() (trace.TracerProvider, func()) {
 		log.Fatal(err)
 	}
 	otel.SetTracerProvider(tr)
-	b3 := b3.B3{
-		InjectEncoding: b3.B3MultipleHeader | b3.B3SingleHeader,
-	}
+	b3 := b3.B3{InjectEncoding: b3.B3MultipleHeader}
 	otel.SetTextMapPropagator(b3)
 	return tr, flush
 }

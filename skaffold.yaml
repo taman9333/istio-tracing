@@ -40,3 +40,5 @@ build:
         manual:
           - src: 'main.go'
             dest: .
+          - src: './**/*.go'
+            dest: .
